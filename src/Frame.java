@@ -252,7 +252,7 @@ public class Frame extends JFrame{
             dullPanel.setBackground(backgroundColor);
             c.gridy = k;
             k = 11 - k;
-            dullPanel.setPreferredSize(new Dimension(600, k * 60 + 29));
+            dullPanel.setPreferredSize(new Dimension(600, (k+1) * 60));
             c.gridx = 0;
             c.gridheight = k;
             c.weightx = 1.0;
