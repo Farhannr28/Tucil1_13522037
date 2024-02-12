@@ -17,11 +17,13 @@ public class Frame extends JFrame implements ActionListener{
     static Color backgroundColor = new Color(13,15,17);
     static Color Green = new Color(208,237,87);
     static Color DisabledGreen = new Color(87, 87, 87);
+    static Color Blue = new Color(94, 233, 242);
     static Font fontTitle = new Font(Font.MONOSPACED, Font.BOLD,  45);
     static Font fontCell = new Font(Font.MONOSPACED, Font.BOLD,  50);
     static Font fontSequence = new Font(Font.MONOSPACED, Font.BOLD,  24);
     static Font buttonFont = new Font(Font.MONOSPACED, Font.PLAIN,  24);
     static Font smallFont = new Font(Font.MONOSPACED, Font.PLAIN,  18);
+    static Font mediumFont = new Font(Font.MONOSPACED, Font.PLAIN,  32);
 
     static JLabel titleLabel, fileNameLabel;
     static JPanel bufferPanel, matrixBorder, sequenceBorder, sequenceListPanel, controlPanel, matrixPanel, filePanel;
@@ -352,6 +354,7 @@ public class Frame extends JFrame implements ActionListener{
                 Main.frame.drawMatrix();
                 Main.frame.drawSequenceList();
                 fileNameLabel.setText(fileName);
+                Main.fileName = fileName;
                 toggleSolveButton();
             } else {
                 fileName = null;
@@ -367,8 +370,12 @@ public class Frame extends JFrame implements ActionListener{
             long endTime = System.nanoTime();
             long duration = (endTime - startTime);
             double milliseconds = duration / 1_000_000.0;
-            System.out.println("Time taken: " + milliseconds + " milliseconds");
+            //System.out.println("Time taken: " + milliseconds + " milliseconds");
+            Main.time = milliseconds;
             AnswerFrame answerFrame = new AnswerFrame();
+            answerFrame.drawHeader();
+            answerFrame.drawTimeButton();
+            answerFrame.drawRoute();
         } else {
             RandomizeFrame randomizeFrame = new RandomizeFrame();
         }

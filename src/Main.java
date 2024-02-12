@@ -10,6 +10,8 @@ public class Main{
     public static int maxReward;
     public static Coordinate answerRoute[];
     public static Random rng;
+    public static double time;
+    public static String fileName;
 
     public static void main(String args[]){
         long currentTime = System.currentTimeMillis();

@@ -182,7 +182,7 @@ public class RandomizeFrame extends JFrame implements ActionListener {
         int currLen;
         String[] seq = new String[maxLength];
         for (int i=0; i<numSequence; i++){
-            currLen = Main.rng.nextInt(maxLength) + 1;
+            currLen = Main.rng.nextInt(maxLength-1)+2;
             for (int j=0; j<currLen; j++){
                 seq[j] = tokens[Main.rng.nextInt(len)];
             }
