@@ -1,5 +1,6 @@
 package src;
 
+import java.util.Random;
 public class Main{
     static Frame frame;
     static Solver solver;
@@ -8,14 +9,13 @@ public class Main{
     public static Sequence[] sequenceList;
     public static int maxReward;
     public static Coordinate answerRoute[];
+    public static Random rng;
 
     public static void main(String args[]){
+        long currentTime = System.currentTimeMillis();
+        rng = new Random(currentTime);
+        solver = new Solver();
         frame = new Frame();
-        FileReader.readFile("testcase/tc1.txt");
-
-        frame.drawMatrix();
-        frame.drawSequenceList();
-
 
         /*
         System.out.println(buffer);
@@ -32,34 +32,6 @@ public class Main{
             System.out.println("\n" + sequenceList[i].rew);
             System.out.println("\n" + sequenceList[i].len);
         } 
-        */
-        
-
-        long startTime = System.nanoTime();
-        answerRoute = new Coordinate[buffer];
-        for (int i=0; i<buffer; i++){
-            answerRoute[i] = new Coordinate(-1, -1);
-        }
-        solver = new Solver(buffer);
-        Solver.solve();
-        
-        int i=0;
-        while (i < Main.buffer && !(answerRoute[i].col == -1 && answerRoute[i].row == -1)){
-            System.out.print(answerRoute[i].col + "-" + answerRoute[i].row + " ");
-            i++;
-        }
-        System.out.println();
-        i=0;
-        while (i < Main.buffer && !(answerRoute[i].col == -1 && answerRoute[i].row == -1)){
-            System.out.print(matrix.tab[answerRoute[i].row][answerRoute[i].col] + " ");
-            i++;
-        }
-        System.out.println("");
-        System.out.println(maxReward);
-        
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime);
-        double milliseconds = duration / 1_000_000.0;
-        System.out.println("Time taken: " + milliseconds + " milliseconds");
+        */      
     }
 }

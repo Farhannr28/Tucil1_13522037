@@ -1,7 +1,6 @@
 package src;
 
 import javax.swing.*;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,10 +8,15 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.filechooser.*;
+import java.nio.file.*;
 
-public class Frame extends JFrame{
+public class Frame extends JFrame implements ActionListener{
     static Color backgroundColor = new Color(13,15,17);
     static Color Green = new Color(208,237,87);
+    static Color DisabledGreen = new Color(87, 87, 87);
     static Font fontTitle = new Font(Font.MONOSPACED, Font.BOLD,  45);
     static Font fontCell = new Font(Font.MONOSPACED, Font.BOLD,  50);
     static Font fontSequence = new Font(Font.MONOSPACED, Font.BOLD,  24);
@@ -20,11 +24,17 @@ public class Frame extends JFrame{
     static Font smallFont = new Font(Font.MONOSPACED, Font.PLAIN,  18);
 
     static JLabel titleLabel, fileNameLabel;
-    static JPanel matrixBorder, sequenceBorder, sequenceListPanel, controlPanel, matrixPanel, filePanel;
+    static JPanel bufferPanel, matrixBorder, sequenceBorder, sequenceListPanel, controlPanel, matrixPanel, filePanel;
     static JButton solveButton, randomButton, inputButton;
     static JScrollPane scrollMatrix, scrollSequence;
 
     Frame(){
+        bufferPanel = new JPanel();
+        bufferPanel.setBackground(backgroundColor);
+        bufferPanel.setForeground(Green);
+        bufferPanel.setBounds(65, 13, 200, 60);
+        bufferPanel.setBorder(BorderFactory.createLineBorder(Green, 5));
+
         titleLabel = new JLabel();
         titleLabel.setText("Breach Protocol Solver");
         titleLabel.setForeground(Green);
@@ -34,8 +44,8 @@ public class Frame extends JFrame{
 
         matrixBorder = new JPanel();
         matrixBorder.setBounds(55, 85, 755, 755);
-        // matrixBorder.setBorder(BorderFactory.createLineBorder(Green, 5));
         matrixBorder.setBackground(backgroundColor);
+        matrixBorder.setBorder(BorderFactory.createLineBorder(Green, 5));
 
         matrixPanel = new JPanel();
         matrixPanel.setBackground(backgroundColor);
@@ -45,6 +55,7 @@ public class Frame extends JFrame{
         sequenceBorder = new JPanel();
         sequenceBorder.setBounds(860, 205, 675, 635);
         sequenceBorder.setBackground(backgroundColor);
+        sequenceBorder.setBorder(BorderFactory.createLineBorder(Green, 5));
 
         sequenceListPanel = new JPanel();
         sequenceListPanel.setBackground(backgroundColor);
@@ -71,7 +82,7 @@ public class Frame extends JFrame{
         filePanel.setLayout(new GridLayout(2, 1));
         controlPanel.add(filePanel, c);
 
-        fileNameLabel = new JLabel("tc4.txt");
+        fileNameLabel = new JLabel("no file choosen");
         fileNameLabel.setBackground(backgroundColor);
         fileNameLabel.setHorizontalAlignment(JLabel.CENTER);
         fileNameLabel.setVerticalAlignment(JLabel.CENTER);
@@ -86,6 +97,7 @@ public class Frame extends JFrame{
         inputButton.setForeground(backgroundColor);
         inputButton.setFont(buttonFont);
         inputButton.setFocusable(false);
+        inputButton.addActionListener(this);
         filePanel.add(inputButton);
 
         solveButton = new JButton("Solve");
@@ -95,6 +107,9 @@ public class Frame extends JFrame{
         solveButton.setForeground(Green);
         solveButton.setFont(buttonFont);
         solveButton.setFocusable(false);
+        solveButton.setEnabled(false);
+        solveButton.setBorder(BorderFactory.createLineBorder(DisabledGreen, 5));
+        solveButton.addActionListener(this);
         c.gridx = 2;
         c.gridwidth = 1;
         c.gridheight = 1;
@@ -110,6 +125,7 @@ public class Frame extends JFrame{
         randomButton.setForeground(Green);
         randomButton.setFont(buttonFont);
         randomButton.setFocusable(false);
+        randomButton.addActionListener(this);
         c.gridx = 3;
         c.gridwidth = 1;
         c.gridheight = 1;
@@ -125,13 +141,27 @@ public class Frame extends JFrame{
         this.setResizable(false);
         this.getContentPane().setBackground(backgroundColor);
 
+        this.add(bufferPanel);
         this.add(titleLabel);
         this.add(controlPanel);
+        this.add(matrixBorder);
+        this.add(sequenceBorder);
 
         this.setVisible(true);
     }
 
+    public void drawBuffer(){
+        JLabel bufferLabel = new JLabel();
+        bufferLabel.setForeground(Green);
+        bufferLabel.setText("Buffer: " + Main.buffer);
+        bufferLabel.setFont(fontSequence);
+        bufferLabel.setHorizontalAlignment(JLabel.CENTER);
+        bufferLabel.setVerticalAlignment(JLabel.CENTER);
+        bufferPanel.add(bufferLabel);
+    }
+
     public void drawMatrix(){
+        matrixBorder.setBorder(null);
         // 24 Token per Row
         int row = Main.matrix.height;
         int col = Main.matrix.width;
@@ -170,11 +200,13 @@ public class Frame extends JFrame{
         scrollMatrix.revalidate();
         scrollMatrix.repaint();
         this.add(matrixBorder);
+        matrixBorder.revalidate();
         matrixBorder.repaint();
         // System.out.println("Border: " + matrixBorder.getSize());
     }
 
     public void drawSequenceList(){
+        sequenceBorder.setBorder(null);
         // 8 Token per Row
         int totalToken = 0;
         int numSequence = Main.sequenceList.length;
@@ -252,7 +284,7 @@ public class Frame extends JFrame{
             dullPanel.setBackground(backgroundColor);
             c.gridy = k;
             k = 11 - k;
-            dullPanel.setPreferredSize(new Dimension(600, (k+1) * 60));
+            dullPanel.setPreferredSize(new Dimension(600, k * 60 + 30));
             c.gridx = 0;
             c.gridheight = k;
             c.weightx = 1.0;
@@ -272,6 +304,73 @@ public class Frame extends JFrame{
         scrollSequence.revalidate();
         scrollSequence.repaint();
         this.add(sequenceBorder);
+        sequenceBorder.revalidate();
         sequenceBorder.repaint();
+    }
+
+    public static void clear(){
+        Main.matrix = null;
+        Main.sequenceList = null;
+        Main.answerRoute = null;
+        bufferPanel.removeAll();
+        matrixPanel.removeAll();
+        matrixBorder.removeAll();
+        sequenceListPanel.removeAll();
+        sequenceBorder.removeAll();
+        matrixBorder.setBorder(BorderFactory.createLineBorder(Green, 5));
+        sequenceBorder.setBorder(BorderFactory.createLineBorder(Green, 5));
+        matrixBorder.revalidate();
+        matrixBorder.repaint();
+        sequenceBorder.revalidate();
+        sequenceBorder.repaint();
+    }
+
+    public void toggleSolveButton(){
+        if (solveButton.isEnabled()){
+            solveButton.setEnabled(false);
+            solveButton.setBorder(BorderFactory.createLineBorder(DisabledGreen, 5));
+        } else {
+            solveButton.setEnabled(true);
+            solveButton.setBorder(BorderFactory.createLineBorder(Green, 5));
+        }
+    }
+
+    public void actionPerformed(ActionEvent e){
+        String com = e.getActionCommand();
+        if (com == "Input File"){
+            JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView());
+            int openDialog = fileChooser.showOpenDialog(null);
+            String fileName = null;
+            if (openDialog == JFileChooser.APPROVE_OPTION){
+                fileName = fileChooser.getSelectedFile().getName();
+                Path absolutePath = fileChooser.getSelectedFile().toPath();
+                Path currentDirectory = Paths.get(System.getProperty("user.dir"));
+                Path relativePath = currentDirectory.relativize(absolutePath);
+                Frame.clear();
+                FileReader.readFile(relativePath.toString());
+                Main.frame.drawBuffer();
+                Main.frame.drawMatrix();
+                Main.frame.drawSequenceList();
+                fileNameLabel.setText(fileName);
+                toggleSolveButton();
+            } else {
+                fileName = null;
+                fileNameLabel.setText("no file choosen");
+            }
+        } else if (com == "Solve"){
+            Main.answerRoute = new Coordinate[Main.buffer];
+            for (int i=0; i<Main.buffer; i++){
+                Main.answerRoute[i] = new Coordinate(-1, -1);
+            }
+            long startTime = System.nanoTime();
+            Solver.solve();
+            long endTime = System.nanoTime();
+            long duration = (endTime - startTime);
+            double milliseconds = duration / 1_000_000.0;
+            System.out.println("Time taken: " + milliseconds + " milliseconds");
+            AnswerFrame answerFrame = new AnswerFrame();
+        } else {
+            RandomizeFrame randomizeFrame = new RandomizeFrame();
+        }
     }
 }

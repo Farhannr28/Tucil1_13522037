@@ -11,12 +11,9 @@ public class Solver {
     static int caseCount;
     static int size;
 
-    Solver(int sz){
-        size = sz;
-    }
-
     public static void solve(){
         // Initiate
+        size = Main.buffer;
         route = new Coordinate[size];
         Main.maxReward = 0;
         currentBuffer = new String[size];
@@ -30,37 +27,72 @@ public class Solver {
         visitedSet.add(temp);
         currentBuffer[0] = Main.matrix.tab[0][0];
         patternMatch();
-        pointer++;
 
         // Fill
         // pointer odd, go vertical, same col
+        boolean addPrevious;
         while (pointer < size){
-            if (pointer%2==0){
-                temp = new Coordinate(0, route[pointer-1].row);
-            } else {
-                temp = new Coordinate(route[pointer-1].col, 0);
+            // System.out.println(pointer + " " + route[pointer].col + "-" + route[pointer].row);
+            addPrevious = false;
+            while ((pointer%2==0 && route[pointer].col>end.col) || (pointer%2==1 && route[pointer].row>end.row)){
+                // System.out.println("addPrevious true: " + " " + route[pointer].col + "-" + route[pointer].row);
+                visitedSet.remove(route[pointer]);
+                pointer--;
+                addPrevious = true;
             }
-            while (!visitedSet.add(temp)){
-                if (pointer%2==0){
-                    temp.col++;
-                } else {
-                    temp.row++;
+            if (addPrevious){
+                while(!visitedSet.add(route[pointer])){
+                    temp = new Coordinate(route[pointer].col, route[pointer].row);
+                    route[pointer] = temp;
+                    if (pointer%2==0){
+                        route[pointer].col++;
+                    } else {
+                        route[pointer].row++;
+                    }
+                    //System.out.println(route[pointer].col + "-" + route[pointer].row);
                 }
+                // System.out.println("add: " + " " + route[pointer].col + "-" + route[pointer].row);
+                if ((pointer%2==0 && route[pointer].col>end.col) || (pointer%2==1 && route[pointer].row>end.row)){
+                    continue;
+                }
+                currentBuffer[pointer] = Main.matrix.tab[route[pointer].row][route[pointer].col];
+                patternMatch();
+            } else {
+                pointer++;
+                if (pointer == size){
+                    break;
+                }
+                if (pointer%2==0){
+                    temp = new Coordinate(0, route[pointer-1].row);
+                } else {
+                    temp = new Coordinate(route[pointer-1].col, 0);
+                }
+                while (!visitedSet.add(temp)){
+                    if (pointer%2==0){
+                        temp.col++;
+                    } else {
+                        temp.row++;
+                    }
+                }
+                route[pointer] = temp;
+                if ((pointer%2==0 && temp.col>end.col) || (pointer%2==1 && temp.row>end.row)){
+                    // System.out.println("continue");
+                    continue;
+                }
+                currentBuffer[pointer] = Main.matrix.tab[temp.row][temp.col];
+                patternMatch();
             }
-            currentBuffer[pointer] = Main.matrix.tab[temp.row][temp.col];
-            route[pointer] = temp;
-            patternMatch();
-            pointer++;
         }
         pointer--;
 
         // Start
+       //  System.out.println("start");
         while (pointer >= 0){
             while ((pointer%2==0 && route[pointer].col>end.col) || (pointer%2==1 && route[pointer].row>end.row)){
                 visitedSet.remove(route[pointer]);
                 pointer--;
             }
-            if (pointer < 0){
+            if (pointer<0){
                 break;
             }
             visitedSet.remove(route[pointer]);
@@ -69,6 +101,8 @@ public class Solver {
             } else {
                 route[pointer].row++;
             }
+            temp = new Coordinate(route[pointer].col, route[pointer].row);
+            route[pointer] = temp;
             while(!visitedSet.add(route[pointer])){
                 if (pointer%2==0){
                     route[pointer].col++;
@@ -90,12 +124,15 @@ public class Solver {
                     route[pointer].row = 0;
                     route[pointer].col = route[pointer-1].col; 
                 }
+                temp = new Coordinate(route[pointer].col, route[pointer].row);
+                route[pointer] = temp;
                 while(!visitedSet.add(route[pointer])){
                     if (pointer%2==0){
                         route[pointer].col++;
                     } else {
                         route[pointer].row++;
                     }
+                    // System.out.println(route[pointer].col + "-" + route[pointer].row);
                 }
                 if ((pointer%2==0 && route[pointer].col>end.col) || (pointer%2==1 && route[pointer].row>end.row)){
                     continue;
