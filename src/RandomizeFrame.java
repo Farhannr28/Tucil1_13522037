@@ -138,6 +138,7 @@ public class RandomizeFrame extends JFrame implements ActionListener {
                                 if (filled5){
                                     tokenInputField.setBorder(BorderFactory.createLineBorder(Frame.Green, 3));
                                     generateRandom();
+                                    Main.frame.toggleSolveButton();
                                 } else {
                                     tokenInputField.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
                                 }

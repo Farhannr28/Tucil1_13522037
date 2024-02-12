@@ -12,10 +12,10 @@ public class WriteFile {
 
     WriteFile(){
         if (Main.fileName==null){
-            filePath = "testing/Solved_generated" + generated + ".txt";
+            filePath = "test/Solved_generated" + generated + ".txt";
             generated++;
         } else {
-            filePath = "testing/Solved_" + Main.fileName;
+            filePath = "test/Solved_" + Main.fileName;
         }
         content = Main.maxReward + "\n";
         if (!AnswerFrame.notFound){

@@ -17,23 +17,6 @@ public class Main{
         long currentTime = System.currentTimeMillis();
         rng = new Random(currentTime);
         solver = new Solver();
-        frame = new Frame();
-
-        /*
-        System.out.println(buffer);
-        for (int i=0; i<matrix.height; i++){
-            for (int j=0; j<matrix.width; j++){
-                System.out.print(matrix.tab[i][j] + " ");
-            }
-            System.out.println("");
-        }
-        for (int i=0; i<sequenceList.length; i++){
-            for (int j=0; j<sequenceList[i].len; j++){
-                System.out.print(sequenceList[i].strArr[j] + " ");
-            }
-            System.out.println("\n" + sequenceList[i].rew);
-            System.out.println("\n" + sequenceList[i].len);
-        } 
-        */      
+        frame = new Frame();  
     }
 }

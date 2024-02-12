@@ -10,6 +10,7 @@ public class Solver {
     static int pointer;
     static int caseCount;
     static int size;
+    static int minimumLength;
 
     public static void solve(){
         // Initiate
@@ -150,21 +151,9 @@ public class Solver {
             System.out.println();
             */
         }
-        System.out.println(caseCount);
     }
 
     public static void patternMatch(){
-        /*
-        for (int i=0; i<=pointer; i++){
-            System.out.print(currentBuffer[i] + " ");
-        }
-        System.out.println();
-
-        for (int i=0; i<=pointer; i++){
-            System.out.print(route[i].col + "-" + route[i].row + " ");
-        }
-        System.out.println();
-        */
         caseCount++;
         int sum = 0;
         int j;
@@ -177,12 +166,6 @@ public class Solver {
                     }
                     if (j == sq.len){
                         sum += sq.rew;
-                        /*
-                        System.out.println(j + " " + sq.len);
-                        System.out.println(currentBuffer[i+j-1] + " = " + sq.strArr[j-1]);
-                        System.out.println(currentBuffer[i+j-2] + " = " + sq.strArr[j-2]);
-                        System.out.println(currentBuffer[i+j-3] + " = " + sq.strArr[j-3]);
-                        */
                         break;
                     }
                 }
@@ -191,53 +174,33 @@ public class Solver {
         if (sum > Main.maxReward){
             Main.maxReward = sum;
             int i=0;
+            minimumLength = pointer;
             while (i <= pointer){
                 Main.answerRoute[i].row = route[i].row;
                 Main.answerRoute[i].col = route[i].col;
                 i++;
             }
-    
             while (i < Main.buffer){
                 Main.answerRoute[i].row = -1;
                 Main.answerRoute[i].col = -1;
                 i++;
             }
-            
-            /*
-            int k=0;
-            while (k < Main.buffer && !(Main.answerRoute[k].col == -1 && Main.answerRoute[k].row == -1)){
-                System.out.print(Main.matrix.tab[Main.answerRoute[k].row][Main.answerRoute[k].col] + " ");
-                k++;
-            }
-            System.out.println();
-            System.out.println(sum);
-            */
-        }
-    }
-
-    /*
-    public static void main(String[] args){
-        currentBuffer = new String[]{"7A", "55", "55", "55", "BD", "1C", "E9", "55", "7A", "55", "1C", "E9"};
-        String[] sqList = new String[]{"BD", "E9", "1C"};
-        for (int i=0; i<=11; i++){
-            if (currentBuffer[i].equals(sqList[0])){
-                System.out.println(currentBuffer[i] + sqList[0]);
-                int j=1;
-                while (j<3 && i+j<=11 && currentBuffer[i+j].equals(sqList[j])){
-                    System.out.println(currentBuffer[i+j] + sqList[j]);
-                    j++;
+        } else if (sum == Main.maxReward){
+            if (pointer < minimumLength){
+                Main.maxReward = sum;
+                int i=0;
+                minimumLength = pointer;
+                while (i <= pointer){
+                    Main.answerRoute[i].row = route[i].row;
+                    Main.answerRoute[i].col = route[i].col;
+                    i++;
                 }
-                if (j == 3){
-                    System.out.println("exist");
-                    System.out.println(j + " " + 3);
-                    System.out.println(currentBuffer[i+j-1] + " = " + sqList[j-1]);
-                    System.out.println(currentBuffer[i+j-2] + " = " + sqList[j-2]);
-                    System.out.println(currentBuffer[i+j-3] + " = " + sqList[j-3]);
-                    break;
-                }
+                while (i < Main.buffer){
+                    Main.answerRoute[i].row = -1;
+                    Main.answerRoute[i].col = -1;
+                    i++;
+                }  
             }
         }
-        System.out.println("nope");
     }
-    */
 }

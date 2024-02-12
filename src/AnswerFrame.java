@@ -1,23 +1,15 @@
 package src;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Panel;
 import java.awt.Rectangle;
-import java.awt.GridLayout;
 import java.awt.GridBagLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GridBagConstraints;
-import java.awt.geom.Line2D;
-import java.awt.geom.Path2D;
-import java.awt.geom.Point2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -131,52 +123,45 @@ public class AnswerFrame extends JFrame implements ActionListener{
                 int col = Main.matrix.width;
                 int cellSize = Math.min(Math.max(720/row, 36), Math.max(720/col, 36));
                 routePanel.setSize(new Dimension(Math.max(740, 30*col), Math.max(740, 30*row)));
-                //routePanel.setLayout(new GridBagLayout());
+                routePanel.setLayout(new GridBagLayout());
                 GridBagConstraints c = new GridBagConstraints();
                 Font fontRoute = Frame.fontCell.deriveFont((float) cellSize/ (float) 2.5);
-                JLabel[][]  labelArr = new JLabel[row][col];
+                JPanel[][]  cellArr = new JPanel[row][col];
                 for (int i=0; i<row; i++){
                     for (int j=0; j<col; j++){
                         JLabel label = new JLabel(Main.matrix.tab[i][j]);
+                        JPanel cell = new JPanel();
+                        cell.setPreferredSize(new Dimension(cellSize, cellSize));
+                        cell.setBorder(null);
+                        cell.setBackground(Frame.backgroundColor);
                         label.setForeground(Frame.Green);
                         label.setPreferredSize(new Dimension(cellSize, cellSize));
-                        label.setBorder(null);
                         label.setVerticalAlignment(JLabel.CENTER);
                         label.setHorizontalAlignment(JLabel.CENTER);
                         label.setFont(fontRoute);
-                        // label.setOpaque(false);
                         c.gridx = j;
                         c.gridy = i;
                         c.gridwidth = 1;
                         c.gridheight = 1;
-                        routePanel.add(label, c);
-                        labelArr[i][j] = label;
+                        cell.add(label);
+                        routePanel.add(cell, c);
+                        cellArr[i][j] = cell;
                     }
                 }
                 int len = 0;
                 while (len < Main.buffer && !(Main.answerRoute[len].col == -1 && Main.answerRoute[len].row == -1)){
                     len++;
                 }
-                JLabel source,dest;
-                for (int i=0; i<len-1; i++){
-                    source = labelArr[Main.answerRoute[i].row][Main.answerRoute[i].col];
-                    dest = labelArr[Main.answerRoute[i+1].row][Main.answerRoute[i+1].col];
-                    source.setBorder(BorderFactory.createLineBorder(Frame.Blue, 4));
-                    dest.setBorder(BorderFactory.createLineBorder(Frame.Blue, 4));
-                }
-                routePanel.revalidate();
-                routePanel.repaint();
-                RouteLines routeLines = new RouteLines(labelArr, len);
-                routePanel.revalidate();
-                routePanel.repaint();
-                routeLines.revalidate();
-                routeLines.repaint();
-                routePanel.add(routeLines);
+                JPanel source,dest;
+            for (int i=0; i<len-1; i++){
+                source = cellArr[Main.answerRoute[i].row][Main.answerRoute[i].col];
+                dest = cellArr[Main.answerRoute[i+1].row][Main.answerRoute[i+1].col];
+                source.setBorder(BorderFactory.createLineBorder(Frame.Blue, 4));
+                dest.setBorder(BorderFactory.createLineBorder(Frame.Blue, 4));
+            }
                 routePanel.revalidate();
                 routePanel.repaint();
                 routeBorder.add(routePanel);
-                routeBorder.revalidate();
-                routeBorder.repaint();
             } else {
                 JLabel tooBig = new JLabel("Route is too big to be drawn, Save file to see the full route");
                 tooBig.setForeground(Frame.Green);
@@ -218,7 +203,7 @@ public class AnswerFrame extends JFrame implements ActionListener{
         messageLabel.setHorizontalAlignment(JLabel.CENTER);
         messageLabel.setVerticalAlignment(JLabel.CENTER);
         messageLabel.setFont(Frame.smallFont);
-        messageLabel.setPreferredSize(new Dimension(200, 200));
+        messageLabel.setPreferredSize(new Dimension(300, 300));
         saveButtonPanel.add(messageLabel);
         answerPanel.revalidate();
         answerPanel.repaint();
