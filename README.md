@@ -7,5 +7,5 @@ Farhan Nafis Rayhan - 13522037
 ## How to Run
 1. Clone this repository or dowload as a Zip
 2. Open your local terminal
-3. Change your directory into '..\Tucil1_13522037'
-4. Run the following command to start program 'java -cp bin src.Main'
+3. Change your directory into `..\Tucil1_13522037`
+4. Run the following command to start program `java -cp bin src.Main`
